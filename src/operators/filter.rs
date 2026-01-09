@@ -5,17 +5,17 @@ use crate::plan::ExecutionTask;
 pub struct FilterWorker {
     pub input: Arc<dyn ExecutionTask>,
     pub predicate: fn(i32) -> bool,
+    pub col_idx: usize, 
 }
 
 impl ExecutionTask for FilterWorker {
     fn next_batch(&self) -> Result<Option<RecordBatch>, String> {
-
         let batch = match self.input.next_batch()? {
             Some(b) => b,
             None => return Ok(None),
         };
 
-        let mask: Vec<bool> = match &batch.columns[0] {
+        let mask: Vec<bool> = match &batch.columns[self.col_idx] {
             Column::Int32(data) => data.iter().map(|&v| (self.predicate)(v)).collect(),
         };
 
@@ -29,7 +29,7 @@ impl ExecutionTask for FilterWorker {
                 let Column::Int32(data) = col;
                 let new_values: Vec<i32> = data.iter()
                     .enumerate()
-                    .filter(|(idx, _)| mask[*idx]) 
+                    .filter(|(idx, _)| mask[*idx])
                     .map(|(_, &val)| val)
                     .collect();
                 
