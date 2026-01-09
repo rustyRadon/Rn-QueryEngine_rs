@@ -29,7 +29,7 @@ impl ExecutionTask for FilterWorker {
                 let Column::Int32(data) = col;
                 let new_values: Vec<i32> = data.iter()
                     .enumerate()
-                    .filter(|(idx, _)| mask[*idx]) // Only keep if mask is true
+                    .filter(|(idx, _)| mask[*idx]) 
                     .map(|(_, &val)| val)
                     .collect();
                 
