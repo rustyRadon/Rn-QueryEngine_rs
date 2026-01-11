@@ -3,15 +3,16 @@ mod storage;
 mod plan;
 mod operators;
 
-use std::sync::{Arc, Mutex};
-use std::fs::File;
-use std::io::BufReader;
 use crate::plan::ExecutionTask;
 use crate::storage::ScanWorker;
 use crate::operators::filter::FilterWorker;
 use crate::operators::projection::ProjectionWorker;
 use crate::operators::zip::ZipWorker;
 use crate::common::Column;
+use std::sync::{Arc, Mutex};
+use std::fs::File;
+use std::io::BufReader;
+
 
 fn main() -> Result<(), String> {
     // python3 -c "import struct; f=open('age.bin','wb'); [f.write(struct.pack('<i', x)) for x in [15, 20, 25, 30, 35, 40]]; f.close()"
